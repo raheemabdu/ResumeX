@@ -33,28 +33,28 @@ const Resume = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col justify-center items-center p-6">
+    <div className="min-h-screen bg-gray-100 flex flex-col justify-center items-center p-4 sm:p-6">
       {/* ============ Resume ============ */}
       <div
         ref={resumeRef}
-        className="bg-white shadow-lg rounded-2xl w-full max-w-5xl p-10 leading-relaxed"
+        className="bg-white shadow-lg rounded-2xl w-full max-w-5xl p-6 sm:p-10 leading-relaxed"
       >
         {/* ===== Page 1 ===== */}
         <div className="break-inside-avoid">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-800 mb-1">
+          <div className="text-center mb-6 sm:mb-8">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-1">
               Abdul Raheem
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-base sm:text-lg text-gray-600">
               Frontend Developer | React + Tailwind CSS
             </p>
           </div>
 
           {/* Columns */}
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {/* Left Column */}
-            <div className="col-span-1 space-y-6 border-r pr-6 break-inside-avoid">
+            <div className="md:col-span-1 space-y-6 border-b md:border-b-0 md:border-r border-gray-200 pr-0 md:pr-6 break-inside-avoid">
               <div>
                 <h2 className="text-xl font-semibold text-blue-700 mb-2 border-b pb-1">
                   Profile Summary
@@ -84,8 +84,7 @@ const Resume = () => {
                   Education
                 </h2>
                 <p className="text-gray-700 text-sm leading-relaxed">
-                  Bachelor in Computer Science (BSCS) — University of Example,
-                  2022
+                  Bachelor in Computer Science (BSCS) — University of Example, 2022
                 </p>
               </div>
 
@@ -111,7 +110,7 @@ const Resume = () => {
             </div>
 
             {/* Right Column */}
-            <div className="col-span-2 pl-6 space-y-10 break-inside-avoid">
+            <div className="md:col-span-2 pl-0 md:pl-6 space-y-10 break-inside-avoid">
               <div>
                 <h2 className="text-2xl font-semibold text-blue-700 mb-2 border-b pb-1">
                   Experience
@@ -124,120 +123,105 @@ const Resume = () => {
                     <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
                       <li>Developed and deployed web apps using React + Vite.</li>
                       <li>Created reusable UI components with Tailwind CSS.</li>
-                      <li>
-                        Integrated html2pdf.js for resume export features.
-                      </li>
-                    </ul>
-                     <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
-                      <li>Developed and deployed web apps using React + Vite.</li>
-                      <li>Created reusable UI components with Tailwind CSS.</li>
-                      <li>
-                        Integrated html2pdf.js for resume export features.
-                      </li>
-                    </ul> <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
-                      <li>Developed and deployed web apps using React + Vite.</li>
-                      <li>Created reusable UI components with Tailwind CSS.</li>
-                      <li>
-                        Integrated html2pdf.js for resume export features.
-                      </li>
+                      <li>Integrated html2pdf.js for resume export features.</li>
                     </ul>
                   </div>
-                     <div className="mb-6 break-inside-avoid">
-            <h2 className="text-2xl font-semibold text-blue-700 mb-2 border-b pb-1">
-              Projects
-            </h2>
-            <ul className="list-disc list-inside text-gray-700 text-sm space-y-2">
-              <li>
-                <strong>Resume Builder:</strong> Built using React & Tailwind, allows users to generate downloadable PDF resumes.
-              </li>
-              <li>
-                <strong>Portfolio Website:</strong> Responsive React portfolio with modern animations and smooth UI.
-              </li>
-              <li>
-                <strong>Todo App:</strong> CRUD-based app with React Hooks and local storage integration.
-              </li>
-              <li>
-                <strong>Weather App:</strong> Real-time weather updates using OpenWeather API with Tailwind design.
-              </li>
-              <li>
-                <strong>Expense Tracker:</strong> Budget management app with chart visualization using Recharts.
-              </li>
-            </ul>
-          </div>
-                  
-
-                  
-                  
 
                   <div>
                     <h3 className="font-semibold text-gray-800">
                       UI Developer — Remote Projects (2022 - 2023)
                     </h3>
                     <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
-                      <li>
-                        Collaborated with teams to deliver responsive designs.
-                      </li>
-                      <li>
-                        Optimized website loading time and UI performance.
-                      </li>
+                      <li>Collaborated with teams to deliver responsive designs.</li>
+                      <li>Optimized website loading time and UI performance.</li>
                       <li>Maintained version control using Git and GitHub.</li>
                     </ul>
                   </div>
                 </div>
               </div>
+
+              <div className="mb-6 break-inside-avoid">
+                <h2 className="text-2xl font-semibold text-blue-700 mb-2 border-b pb-1">
+                  Projects
+                </h2>
+                <ul className="list-disc list-inside text-gray-700 text-sm space-y-2">
+                  <li>
+                    <strong>Resume Builder:</strong> Built using React & Tailwind, allows users to generate downloadable PDF resumes.
+                  </li>
+                  <li>
+                    <strong>Portfolio Website:</strong> Responsive React portfolio with modern animations and smooth UI.
+                  </li>
+                  <li>
+                    <strong>Todo App:</strong> CRUD-based app with React Hooks and local storage integration.
+                  </li>
+                  <li>
+                    <strong>Weather App:</strong> Real-time weather updates using OpenWeather API with Tailwind design.
+                  </li>
+                  <li>
+                    <strong>Expense Tracker:</strong> Budget management app with chart visualization using Recharts.
+                  </li>
+                </ul>
+              </div>
+
+              
             </div>
-          </div>
-        </div>
+             
 
-        {/* ===== Page 2 ===== */}
-        <div className="break-after-page">
-          {/* Projects */}
-          <div className="mb-6 break-inside-avoid">
-            <h2 className="text-2xl font-semibold text-blue-700 mb-2 border-b pb-1">
-              Projects
-            </h2>
-            <ul className="list-disc list-inside text-gray-700 text-sm space-y-2">
-              <li>
-                <strong>Resume Builder:</strong> Built using React & Tailwind, allows users to generate downloadable PDF resumes.
-              </li>
-              <li>
-                <strong>Portfolio Website:</strong> Responsive React portfolio with modern animations and smooth UI.
-              </li>
-              <li>
-                <strong>Todo App:</strong> CRUD-based app with React Hooks and local storage integration.
-              </li>
-              <li>
-                <strong>Weather App:</strong> Real-time weather updates using OpenWeather API with Tailwind design.
-              </li>
-              <li>
-                <strong>Expense Tracker:</strong> Budget management app with chart visualization using Recharts.
-              </li>
-            </ul>
+               <div className="mb-6 break-inside-avoid">
+                <h2 className="text-2xl font-semibold text-blue-700 mb-2 border-b pb-1">
+                  Additional Experience
+                </h2>
+                <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
+                  <li>Contributed to open-source React component libraries.</li>
+                  <li>Wrote documentation for Tailwind-based UI templates.</li>
+                  <li>Worked with small startups to create landing pages.</li>
+                  <li>Developed internal dashboards for task tracking.</li>
+                  <li>Experimented with animations and transitions using Framer Motion.</li>
+                </ul>
+              </div>
+                <div className="mb-6 break-inside-avoid">
+                <h2 className="text-2xl font-semibold text-blue-700 mb-2 border-b pb-1">
+                  Projects
+                </h2>
+                <ul className="list-disc list-inside text-gray-700 text-sm space-y-2">
+                  <li>
+                    <strong>Resume Builder:</strong> Built using React & Tailwind, allows users to generate downloadable PDF resumes.
+                  </li>
+                  <li>
+                    <strong>Portfolio Website:</strong> Responsive React portfolio with modern animations and smooth UI.
+                  </li>
+                  <li>
+                    <strong>Todo App:</strong> CRUD-based app with React Hooks and local storage integration.
+                  </li>
+                  <li>
+                    <strong>Weather App:</strong> Real-time weather updates using OpenWeather API with Tailwind design.
+                  </li>
+                  <li>
+                    <strong>Expense Tracker:</strong> Budget management app with chart visualization using Recharts.
+                  </li>
+                </ul>
+              </div>
+               <div>
+                <h2 className="text-xl font-semibold text-blue-700 mb-2 border-b pb-1">
+                  Achievements
+                </h2>
+                <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
+                  <li>Completed 50+ freelance projects</li>
+                  <li>5-star client feedback on Upwork</li>
+                  <li>Contributed to Tailwind UI kits</li>
+                  <li>Designed 10+ mobile-first web apps</li>
+                  <li>Published React components on GitHub</li>
+                </ul>
+              </div>
+              
           </div>
-
-          {/* Additional Experience */}
-          <div className="mb-6 break-inside-avoid">
-            <h2 className="text-2xl font-semibold text-blue-700 mb-2 border-b pb-1">
-              Additional Experience
-            </h2>
-            <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
-              <li>Contributed to open-source React component libraries.</li>
-              <li>Wrote documentation for Tailwind-based UI templates.</li>
-              <li>Worked with small startups to create landing pages.</li>
-              <li>Developed internal dashboards for task tracking.</li>
-              <li>Experimented with animations and transitions using Framer Motion.</li>
-            </ul>
-          </div>
-
-          {/* Personal Statement */}
-         
         </div>
       </div>
 
-      {/* ===== Button ===== */}
+      {/* ===== Download Button ===== */}
       <button
         onClick={handleDownload}
-        className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
+        className="mt-6 px-6 py-3 bg-gray-800 text-white rounded-lg shadow-md"
       >
         Download PDF
       </button>
