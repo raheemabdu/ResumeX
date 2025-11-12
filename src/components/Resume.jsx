@@ -19,33 +19,10 @@ const ResumeOnePage = () => {
     const el = pageRef.current;
     if (!el) return;
 
-    // --- FIX OKLCH COLORS ---
-    const allElements = el.querySelectorAll("*");
-    allElements.forEach((el) => {
-      const style = getComputedStyle(el);
-      if (style.color.includes("oklch")) {
-        el.style.color = "rgb(219, 39, 119)"; // Tailwind pink-600
-      }
-      if (style.backgroundColor.includes("oklch")) {
-        el.style.backgroundColor = "rgb(255, 255, 255)"; // fallback white
-      }
-      if (style.borderColor.includes("oklch")) {
-        el.style.borderColor = "rgb(219, 39, 119)";
-      }
-    });
-
-    // Small delay to ensure styles applied
     await new Promise(r => setTimeout(r, 120));
-
-    // --- HTML to Canvas ---
-    const canvas = await html2canvas(el, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-    });
+    const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: "#ffffff" });
     const imgData = canvas.toDataURL("image/png");
 
-    // --- Generate PDF ---
     const pdf = new jsPDF("p", "mm", "a4");
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -66,7 +43,6 @@ const ResumeOnePage = () => {
 
     pdf.save(`${resumeData.personal.name.replace(/\s+/g, "_")}_CV.pdf`);
   };
-
   const bulletClass =
     "relative pl-4 before:content-[''] before:absolute before:left-0 before:top-1.5 before:w-2 before:h-2 before:rounded-full before:bg-pink-600";
 
@@ -89,19 +65,19 @@ const ResumeOnePage = () => {
         <div className="flex gap-6">
           {/* LEFT COLUMN */}
           <div className="flex-[0.35] flex flex-col items-center gap-4 text-[11px] ml-2">
-            {/* <img src={profilePic} alt="profile" className="w-52 h-52 rounded-full object-cover border-2 border-gray-200 mt-8 -ml-2" /> */}
+            <img src alt="profile" className="w-52 h-52 rounded-full object-cover border-2 border-gray-200 mt-8 -ml-2" />
 
             {/* CONTACT */}
             <div className="w-full">
               <h4 className="font-semibold text-gray-800 mb-2 mt-9.5 text-2xl">CONTACT</h4>
               <div className="space-y-1">
-                <div className="flex items-center gap-2"><FaPhoneAlt className="text-pink-600" /> {resumeData.personal.phone}</div>
-                <div className="flex items-center gap-2"><FaEnvelope className="text-pink-600" /> {resumeData.personal.email}</div>
-                <div className="flex items-center gap-2"><FaLinkedin className="text-pink-600" /> {resumeData.personal.linkedin}</div>
-                <div className="flex items-center gap-2"><FaMapMarkerAlt className="text-pink-600" /> {resumeData.personal.location}</div>
-                <div className="flex items-center gap-2"><FaBirthdayCake className="text-pink-600" /> {resumeData.personal.dob}</div>
-                <div className="flex items-center gap-2"><FaFlag className="text-pink-600" /> {resumeData.personal.nationality}</div>
-                <div className="flex items-center gap-2"><FaUser className="text-pink-600" /> {resumeData.personal.maritalStatus}</div>
+                <div className="flex items-center gap-2"><FaPhoneAlt className="text-pink-500" /> {resumeData.personal.phone}</div>
+                <div className="flex items-center gap-2"><FaEnvelope className="text-pink-500" /> {resumeData.personal.email}</div>
+                <div className="flex items-center gap-2"><FaLinkedin className="text-pink-500" /> {resumeData.personal.linkedin}</div>
+                <div className="flex items-center gap-2"><FaMapMarkerAlt className="text-pink-500" /> {resumeData.personal.location}</div>
+                <div className="flex items-center gap-2"><FaBirthdayCake className="text-pink-500" /> {resumeData.personal.dob}</div>
+                <div className="flex items-center gap-2"><FaFlag className="text-pink-500" /> {resumeData.personal.nationality}</div>
+                <div className="flex items-center gap-2"><FaUser className="text-pink-500" /> {resumeData.personal.maritalStatus}</div>
               </div>
             </div>
 
