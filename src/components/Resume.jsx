@@ -1,232 +1,268 @@
 import React, { useRef } from "react";
-import html2pdf from "html2pdf.js";
+import html2canvas from "html2canvas-pro";
+import jsPDF from "jspdf";
+import {
+  FaPhoneAlt, FaEnvelope, FaLinkedin, FaMapMarkerAlt,
+  FaBirthdayCake, FaFlag, FaUser, FaGlobe
+} from "react-icons/fa";
+import { PiBicycleDuotone } from "react-icons/pi";
+import { TbSwimming } from "react-icons/tb";
+import { RiBookLine } from "react-icons/ri";
+import { GiShuttlecock } from "react-icons/gi";
+import resumeData from "../data/resumeData";
+// import profilePic from "../assets/profile.png";
 
-const Resume = () => {
-  const resumeRef = useRef();
+const ResumeOnePage = () => {
+  const pageRef = useRef();
 
-  const handleDownload = () => {
-    const element = resumeRef.current;
-    if (!element) return;
+  const captureAndSave = async () => {
+    const el = pageRef.current;
+    if (!el) return;
 
-    // Fix OKLCH colors
-    const allElements = element.querySelectorAll("*");
+    // --- FIX OKLCH COLORS ---
+    const allElements = el.querySelectorAll("*");
     allElements.forEach((el) => {
-      const style = window.getComputedStyle(el);
-      const color = style.color;
-      const bg = style.backgroundColor;
-      const border = style.borderColor;
-      if (color.includes("oklch")) el.style.color = "#000000";
-      if (bg.includes("oklch")) el.style.backgroundColor = "#ffffff";
-      if (border.includes("oklch")) el.style.borderColor = "#cccccc";
+      const style = getComputedStyle(el);
+      if (style.color.includes("oklch")) {
+        el.style.color = "rgb(219, 39, 119)"; // Tailwind pink-600
+      }
+      if (style.backgroundColor.includes("oklch")) {
+        el.style.backgroundColor = "rgb(255, 255, 255)"; // fallback white
+      }
+      if (style.borderColor.includes("oklch")) {
+        el.style.borderColor = "rgb(219, 39, 119)";
+      }
     });
 
-    const opt = {
-      margin: 0.2,
-      filename: "Abdul-Raheem-Resume.pdf",
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
-      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
-      pagebreak: { mode: ["avoid-all", "css", "legacy"] },
-    };
+    // Small delay to ensure styles applied
+    await new Promise(r => setTimeout(r, 120));
 
-    html2pdf().set(opt).from(element).save();
+    // --- HTML to Canvas ---
+    const canvas = await html2canvas(el, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+    });
+    const imgData = canvas.toDataURL("image/png");
+
+    // --- Generate PDF ---
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
+    heightLeft -= pdfHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
+      heightLeft -= pdfHeight;
+    }
+
+    pdf.save(`${resumeData.personal.name.replace(/\s+/g, "_")}_CV.pdf`);
   };
 
+  const bulletClass =
+    "relative pl-4 before:content-[''] before:absolute before:left-0 before:top-1.5 before:w-2 before:h-2 before:rounded-full before:bg-pink-600";
+
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col justify-center items-center p-4 sm:p-6">
-      {/* ============ Resume ============ */}
-      <div
-        ref={resumeRef}
-        className="bg-white shadow-lg rounded-2xl w-full max-w-5xl p-6 sm:p-10 leading-relaxed"
-      >
-        {/* ===== Page 1 ===== */}
-        <div className="break-inside-avoid">
-          {/* Header */}
-          <div className="text-center mb-6 sm:mb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-1">
-              Abdul Raheem
-            </h1>
-            <p className="text-base sm:text-lg text-gray-600">
-              Frontend Developer | React + Tailwind CSS
-            </p>
-          </div>
+    <div className="flex flex-col items-center md:bg-gray-100 min-h-screen py-8 font-poppins">
+      <div ref={pageRef} className="w-[270mm] bg-white shadow-sm p-7 relative">
 
-          {/* Columns */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            {/* Left Column */}
-            <div className="md:col-span-1 space-y-6 border-b md:border-b-0 md:border-r border-gray-200 pr-0 md:pr-6 break-inside-avoid">
-              <div>
-                <h2 className="text-xl font-semibold text-blue-700 mb-2 border-b pb-1">
-                  Profile Summary
-                </h2>
-                <p className="text-gray-700 text-sm leading-relaxed">
-                  Passionate frontend developer skilled in creating responsive
-                  and elegant user interfaces using React, Vite, and Tailwind CSS.
-                  Dedicated to performance optimization and clean UI design.
-                </p>
-              </div>
+        {/* Internal CSS for PDF page breaks */}
+        <style>
+          {`
+            @media print {
+              .page-break { 
+                display: block; 
+                page-break-before: always; 
+              }
+            }
+          `}
+        </style>
 
-              <div>
-                <h2 className="text-xl font-semibold text-blue-700 mb-2 border-b pb-1">
-                  Skills
-                </h2>
-                <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
-                  <li>React.js, Vite, Tailwind CSS</li>
-                  <li>HTML5, CSS3, JavaScript (ES6+)</li>
-                  <li>Responsive Design</li>
-                  <li>Git / GitHub</li>
-                  <li>Basic Node.js & Express</li>
-                </ul>
-              </div>
+        <div className="flex gap-6">
+          {/* LEFT COLUMN */}
+          <div className="flex-[0.35] flex flex-col items-center gap-4 text-[11px] ml-2">
+            {/* <img src={profilePic} alt="profile" className="w-52 h-52 rounded-full object-cover border-2 border-gray-200 mt-8 -ml-2" /> */}
 
-              <div>
-                <h2 className="text-xl font-semibold text-blue-700 mb-2 border-b pb-1">
-                  Education
-                </h2>
-                <p className="text-gray-700 text-sm leading-relaxed">
-                  Bachelor in Computer Science (BSCS) — University of Example, 2022
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-xl font-semibold text-blue-700 mb-2 border-b pb-1">
-                  Achievements
-                </h2>
-                <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
-                  <li>Completed 50+ freelance projects</li>
-                  <li>5-star client feedback on Upwork</li>
-                  <li>Contributed to Tailwind UI kits</li>
-                  <li>Designed 10+ mobile-first web apps</li>
-                  <li>Published React components on GitHub</li>
-                </ul>
-              </div>
-
-              <div>
-                <h2 className="text-xl font-semibold text-blue-700 mb-2 border-b pb-1">
-                  References
-                </h2>
-                <p className="text-gray-700 text-sm">Available upon request.</p>
+            {/* CONTACT */}
+            <div className="w-full">
+              <h4 className="font-semibold text-gray-800 mb-2 mt-9.5 text-2xl">CONTACT</h4>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2"><FaPhoneAlt className="text-pink-600" /> {resumeData.personal.phone}</div>
+                <div className="flex items-center gap-2"><FaEnvelope className="text-pink-600" /> {resumeData.personal.email}</div>
+                <div className="flex items-center gap-2"><FaLinkedin className="text-pink-600" /> {resumeData.personal.linkedin}</div>
+                <div className="flex items-center gap-2"><FaMapMarkerAlt className="text-pink-600" /> {resumeData.personal.location}</div>
+                <div className="flex items-center gap-2"><FaBirthdayCake className="text-pink-600" /> {resumeData.personal.dob}</div>
+                <div className="flex items-center gap-2"><FaFlag className="text-pink-600" /> {resumeData.personal.nationality}</div>
+                <div className="flex items-center gap-2"><FaUser className="text-pink-600" /> {resumeData.personal.maritalStatus}</div>
               </div>
             </div>
 
-            {/* Right Column */}
-            <div className="md:col-span-2 pl-0 md:pl-6 space-y-10 break-inside-avoid">
-              <div>
-                <h2 className="text-2xl font-semibold text-blue-700 mb-2 border-b pb-1">
-                  Experience
-                </h2>
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="font-semibold text-gray-800">
-                      Frontend Developer — Freelance (2023 - Present)
-                    </h3>
-                    <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
-                      <li>Developed and deployed web apps using React + Vite.</li>
-                      <li>Created reusable UI components with Tailwind CSS.</li>
-                      <li>Integrated html2pdf.js for resume export features.</li>
-                    </ul>
-                  </div>
+            {/* PORTFOLIO */}
+            <div className="w-full">
+              <h4 className="font-semibold text-gray-800 mb-2 mt-4 text-2xl">PORTFOLIO - WEBSITE LINK</h4>
+              <div className="flex items-center gap-2">
+                <FaGlobe className="text-gray-400" />
+                <a href={resumeData.personal.website} target="_blank" rel="noreferrer" className="text-blue-600 text-sm">{resumeData.personal.website}</a>
+              </div>
+            </div>
 
-                  <div>
-                    <h3 className="font-semibold text-gray-800">
-                      UI Developer — Remote Projects (2022 - 2023)
-                    </h3>
-                    <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
-                      <li>Collaborated with teams to deliver responsive designs.</li>
-                      <li>Optimized website loading time and UI performance.</li>
-                      <li>Maintained version control using Git and GitHub.</li>
-                    </ul>
+            {/* EDUCATION */}
+            <div className="w-full">
+              <h4 className="font-semibold text-gray-800 mb-2 mt-4 text-2xl">EDUCATION</h4>
+              {resumeData.education?.map((edu, i) => (
+                <div key={i} className="mb-2">
+                  <div className="font-semibold text-[14px] text-gray-800">{edu.degree}</div>
+                  <div className="text-sm text-gray-600">{edu.institution}</div>
+                  <div className="text-sm text-gray-600">{edu.country}</div>
+                  <div className="text-xs text-gray-500">{edu.year}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* CORE SKILLS */}
+            <div className="w-full">
+              <h4 className="font-semibold text-gray-800 mb-2 mt-4 text-2xl">CORE SKILLS</h4>
+              <ul className="pl-4 space-y-1">{resumeData.skills.map((s, i) => (<li key={i} className={bulletClass}>{s}</li>))}</ul>
+            </div>
+
+            {/* AWARDS */}
+            <div className="w-full">
+              <h4 className="font-semibold text-gray-800 mb-2 mt-4 text-2xl">AWARDS & ACHIEVEMENTS</h4>
+              <ul className="pl-4 space-y-1">{resumeData.awards.map((a, i) => (<li key={i} className={bulletClass}>{a}</li>))}</ul>
+            </div>
+
+            {/* LANGUAGES */}
+            <div className="w-full -mt-3 mb-4">
+              <h4 className="font-semibold text-gray-800 mb-2 mt-4 text-2xl ">LANGUAGES</h4>
+              <div className="space-y-1">
+                {resumeData.languages.map((l, i) => {
+                  const levels = ["Beginner", "Intermediate", "Fluent"];
+                  return (
+                    <div key={i} className="flex flex-col">
+                      <div className="font-bold text-sm text-gray-900 mb-1">{l.name}</div>
+                      <div className="flex gap-6 items-center">
+                        {levels.map((level) => (
+                          <div key={level} className="flex items-center gap-1">
+                            <span className="w-3 h-3 rounded-full border border-gray-800 flex items-center justify-center">
+                              {l.level === level && <span className="w-2 h-2 bg-pink-600 rounded-full"></span>}
+                            </span>
+                            <span className="text-xs text-gray-800">{level}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* TOOLS */}
+            <div className="w-full mt-2">
+              <h4 className="font-semibold text-gray-800 mb-2 mt-4 text-2xl">TOOLS AND SOFTWARE</h4>
+              <ul className="pl-4 space-y-1">{resumeData.tools.map((t, i) => (<li key={i} className={bulletClass}>{t}</li>))}</ul>
+            </div>
+
+            {/* DEVELOPMENT */}
+            <div className="w-full mt-2">
+              <h4 className="font-semibold text-gray-800 mb-2 mt-4 text-2xl">PROFESSIONAL DEVELOPMENT</h4>
+              <ul className="pl-4 space-y-1">{resumeData.development.map((d, i) => (<li key={i} className={bulletClass}>{d}</li>))}</ul>
+            </div>
+
+            {/* CERTIFICATES */}
+            <div className="w-full mt-2">
+              <h4 className="font-semibold text-gray-800 mb-2 mt-4 text-2xl">CERTIFICATES</h4>
+              {resumeData.certificates.map((c, i) => (
+                <div key={i} className="mb-2 text-xs">
+                  <div className="font-semibold">{c.title} — {c.org} ({c.year})</div>
+                  <div><a href={c.link} target="_blank" rel="noreferrer" className="text-blue-600 text-sm">{c.link}</a></div>
+                  <div className="text-gray-400">{c.code}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* HOBBIES */}
+            <div className="w-full mt-2">
+              <h4 className="font-semibold text-gray-800 mb-2 mt-2 text-2xl">HOBBIES</h4>
+              {(() => {
+                const hobbyIcons = [<RiBookLine size={15} />, <TbSwimming size={15} />, <PiBicycleDuotone size={15} />, <GiShuttlecock size={15} />];
+                return (
+                  <ul className="space-y-2">
+                    {resumeData.hobbies.map((hobby, i) => (
+                      <li key={i} className="flex items-center gap-2 text-gray-700">
+                        <span className="text-pink-600">{hobbyIcons[i] || <GiShuttlecock />}</span>
+                        <span>{hobby}</span>
+                      </li>
+                    ))}
+                  </ul>
+                );
+              })()}
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN */}
+          <div className="flex-[0.65] flex flex-col gap-3 text-[10.4px] -ml-2">
+            <div>
+              <div className="text-7xl font-bold text-gray-800">{resumeData.personal.name.toUpperCase()}</div>
+              <div className="text-2xl font-semibold text-gray-800 mt-1 italic">{resumeData.personal.title}</div>
+            </div>
+            <div className="space-y-1 text-[11px]">{resumeData.summary}</div>
+
+            {/* PROFESSIONAL EXPERIENCE*/}
+            <div className="relative -mt-2">
+              <h4 className="font-semibold text-gray-800 mb-2 text-2xl">PROFESSIONAL EXPERIENCE</h4>
+              <div className="absolute left-[7px] top-13  bottom-4 w-0.5  bg-pink-600"></div>
+
+              {resumeData.experience.map((exp, i) => (
+                <div key={i} className="relative flex items-start mb-6 -mt-0.5">
+                  <span className="absolute left-0 mt-1 w-4 h-4 border-2 border-pink-600 rounded-full bg-white"></span>
+                  <div className="ml-8">
+                    <div className="font-bold text-[14px] tracking-wider text-gray-800">{exp.role}</div>
+                    <div className="text-xs text-gray-600 font-semibold">{exp.org} • {exp.date}</div>
+                    <ul className="pl-4 space-y-1 mt-1">{exp.bullets.map((b, ii) => (<li key={ii} className={bulletClass}>{b}</li>))}</ul>
                   </div>
                 </div>
-              </div>
-
-              <div className="mb-6 break-inside-avoid">
-                <h2 className="text-2xl font-semibold text-blue-700 mb-2 border-b pb-1">
-                  Projects
-                </h2>
-                <ul className="list-disc list-inside text-gray-700 text-sm space-y-2">
-                  <li>
-                    <strong>Resume Builder:</strong> Built using React & Tailwind, allows users to generate downloadable PDF resumes.
-                  </li>
-                  <li>
-                    <strong>Portfolio Website:</strong> Responsive React portfolio with modern animations and smooth UI.
-                  </li>
-                  <li>
-                    <strong>Todo App:</strong> CRUD-based app with React Hooks and local storage integration.
-                  </li>
-                  <li>
-                    <strong>Weather App:</strong> Real-time weather updates using OpenWeather API with Tailwind design.
-                  </li>
-                  <li>
-                    <strong>Expense Tracker:</strong> Budget management app with chart visualization using Recharts.
-                  </li>
-                </ul>
-              </div>
-
-              
+              ))}
             </div>
-             
 
-               <div className="mb-6 break-inside-avoid">
-                <h2 className="text-2xl font-semibold text-blue-700 mb-2 border-b pb-1">
-                  Additional Experience
-                </h2>
-                <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
-                  <li>Contributed to open-source React component libraries.</li>
-                  <li>Wrote documentation for Tailwind-based UI templates.</li>
-                  <li>Worked with small startups to create landing pages.</li>
-                  <li>Developed internal dashboards for task tracking.</li>
-                  <li>Experimented with animations and transitions using Framer Motion.</li>
-                </ul>
-              </div>
-                <div className="mb-6 break-inside-avoid">
-                <h2 className="text-2xl font-semibold text-blue-700 mb-2 border-b pb-1">
-                  Projects
-                </h2>
-                <ul className="list-disc list-inside text-gray-700 text-sm space-y-2">
-                  <li>
-                    <strong>Resume Builder:</strong> Built using React & Tailwind, allows users to generate downloadable PDF resumes.
-                  </li>
-                  <li>
-                    <strong>Portfolio Website:</strong> Responsive React portfolio with modern animations and smooth UI.
-                  </li>
-                  <li>
-                    <strong>Todo App:</strong> CRUD-based app with React Hooks and local storage integration.
-                  </li>
-                  <li>
-                    <strong>Weather App:</strong> Real-time weather updates using OpenWeather API with Tailwind design.
-                  </li>
-                  <li>
-                    <strong>Expense Tracker:</strong> Budget management app with chart visualization using Recharts.
-                  </li>
-                </ul>
-              </div>
-               <div>
-                <h2 className="text-xl font-semibold text-blue-700 mb-2 border-b pb-1">
-                  Achievements
-                </h2>
-                <ul className="list-disc list-inside text-gray-700 text-sm space-y-1">
-                  <li>Completed 50+ freelance projects</li>
-                  <li>5-star client feedback on Upwork</li>
-                  <li>Contributed to Tailwind UI kits</li>
-                  <li>Designed 10+ mobile-first web apps</li>
-                  <li>Published React components on GitHub</li>
-                </ul>
-              </div>
-              
+            {/* PAGE BREAK for PDF */}
+            <div className="page-break"></div>
+
+            {/* INTERNSHIPS */}
+            <div className="relative -mt-4">
+              <h4 className="font-semibold text-gray-800 mb-2 text-2xl">PROFESSIONAL EXPERIENCE</h4>
+              <div className="absolute left-[7px] top-11 bottom-0 w-0.5 bg-pink-600"></div>
+
+              {resumeData.internships.map((it, i) => (
+                <div key={`intern-${i}`} className="relative flex items-start mb-6">
+                  <span className="absolute left-0 mt-1 w-4 h-4 border-2 border-pink-600 rounded-full bg-white"></span>
+                  <div className="ml-8">
+                    <div className="font-bold text-[14px] tracking-wider text-gray-800">{it.role}</div>
+                    <div className="text-xs text-gray-500">{it.org} • {it.date}</div>
+                    <ul className="pl-4 space-y-1 mt-1">{it.bullets.map((b, ii) => (<li key={ii} className={bulletClass}>{b}</li>))}</ul>
+                  </div>
+                </div>
+              ))}
+            </div>
+
           </div>
+
         </div>
       </div>
 
-      {/* ===== Download Button ===== */}
-      <button
-        onClick={handleDownload}
-        className="mt-6 px-6 py-3 bg-gray-800 text-white rounded-lg shadow-md"
-      >
-        Download PDF
-      </button>
+      {/* DOWNLOAD BUTTON */}
+      <div className="flex gap-4 mt-6">
+        <button onClick={captureAndSave} className="bg-pink-600 hover:bg-pink-500 text-white px-5 py-2 rounded">Download PDF</button>
+      </div>
     </div>
   );
 };
 
-export default Resume;
+export default ResumeOnePage;
